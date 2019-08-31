@@ -1,5 +1,17 @@
 import styled from 'styled-components';
 
 export const ListItemContainer = styled.View`
-  flex: 1;
+`;
+
+export const ListItemContent = styled.View`
+`;
+
+export const ListItemTitle = styled.Text`
+`;
+
+export const ListItemDescription = styled.Text`
+`;
+
+
+export const ListItemOption = styled.TouchableOpacity`
 `;
