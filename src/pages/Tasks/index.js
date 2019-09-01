@@ -1,8 +1,10 @@
 import React from 'react';
+import {Platform} from 'react-native';
 import SortableList from 'react-native-sortable-list';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 
 import {
+  TasksKeyboardAvoid,
   TasksContainer,
   TasksTitleContent,
   TasksTitle,
@@ -36,37 +38,43 @@ const Tasks = ({navigation}) => {
   };
 
   return (
-    <TasksContainer>
-      {/* <TasksEmpty /> */}
+    <TasksKeyboardAvoid
+      behavior={Platform.select({
+        ios: 'padding',
+        android: null,
+      })}>
+      <TasksContainer>
+        {/* <TasksEmpty /> */}
 
-      <SortableList
-        data={data}
-        style={{flex: 1}}
-        contentContainerStyle={{flex: 1}}
-        innerContainerStyle={{flex: 1}}
-        renderHeader={() => (
-          <TasksTitleContent>
-            <AntDesign name="flag" size={36} color="#fff" />
-            <TasksTitle>5 Tarefas Pendentes!</TasksTitle>
-            <TasksDesc>Força e Resiliência</TasksDesc>
-          </TasksTitleContent>
-        )}
-        renderRow={({data, active}) => (
-          <TasksItem
-            onPressChecker={() => {}}
-            onPressNavigator={() => {
-              navigation.navigate('Task', {
-                idtask: data.idtask,
-              });
-            }}
-            onPressMenu={() => {}}
-            data={data}
-            active={active}
-          />
-        )}
-      />
-      <TasksPlus />
-    </TasksContainer>
+        <SortableList
+          data={data}
+          style={{flex: 1}}
+          contentContainerStyle={{flex: 1}}
+          innerContainerStyle={{flex: 1}}
+          renderHeader={() => (
+            <TasksTitleContent>
+              <AntDesign name="flag" size={36} color="#fff" />
+              <TasksTitle>5 Tarefas Pendentes!</TasksTitle>
+              <TasksDesc>Força e Resiliência</TasksDesc>
+            </TasksTitleContent>
+          )}
+          renderRow={({data, active}) => (
+            <TasksItem
+              onPressChecker={() => {}}
+              onPressNavigator={() => {
+                navigation.navigate('Task', {
+                  idtask: data.idtask,
+                });
+              }}
+              onPressMenu={() => {}}
+              data={data}
+              active={active}
+            />
+          )}
+        />
+        <TasksPlus />
+      </TasksContainer>
+    </TasksKeyboardAvoid>
   );
 };
 
