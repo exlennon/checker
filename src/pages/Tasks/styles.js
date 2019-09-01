@@ -1,5 +1,9 @@
 import styled from 'styled-components';
 
+export const TasksKeyboardAvoid = styled.KeyboardAvoidingView`
+  flex: 1;
+`;
+
 export const TasksContainer = styled.SafeAreaView`
   flex: 1;
   background: #3c4556;
