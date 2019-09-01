@@ -10,7 +10,7 @@ import Routes from '~/routes';
 
 const App = () => (
   <Provider store={store}>
-    <StatusBar backgroundColor="#3c4556" barStyle="light-content" />
+    <StatusBar backgroundColor="#2c1656" barStyle="light-content" />
     <Routes />
   </Provider>
 );

@@ -1,7 +1,10 @@
 import styled from 'styled-components';
 
+export const TasksItemMoveArea = styled.View`
+  padding: 0 20px;
+`;
+
 export const TasksItemContainer = styled.View`
-  flex: 1;
   flex-direction: row;
   padding: 20px;
   opacity: ${props => (props.finished ? 0.4 : 1)};
@@ -13,7 +16,7 @@ export const TasksItemContainer = styled.View`
   border-style: dashed;
 `;
 
-export const TasksItemContent = styled.TouchableOpacity`
+export const TasksItemContent = styled.View`
   flex-direction: column;
   flex: 1;
   padding: 0 20px;

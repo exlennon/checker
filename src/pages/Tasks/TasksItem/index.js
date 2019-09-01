@@ -4,6 +4,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 
 import {
+  TasksItemMoveArea,
   TasksItemContainer,
   TasksItemContent,
   TasksItemTitle,
@@ -14,35 +15,38 @@ import {
 const TasksItem = ({
   data,
   active = false,
-  onPressNavigator,
   onPressChecker,
   onPressMenu,
 }) => (
-  <TasksItemContainer active={active} finished={data.finished}>
-    <TasksItemOption activeOpacity={0.5} onPress={onPressChecker}>
-      <MaterialIcons
-        name={data.finished ? 'check-circle' : 'radio-button-unchecked'}
-        size={36}
-        color="#f5f5f5"
-      />
-    </TasksItemOption>
-    <TasksItemContent activeOpacity={0.5} onPress={onPressNavigator}>
-      <TasksItemTitle finished={data.finished}>{data.title}</TasksItemTitle>
-      <TasksItemDescription finished={data.finished}>
-        {data.description}
-      </TasksItemDescription>
-    </TasksItemContent>
-    <TasksItemOption activeOpacity={0.58} onPress={onPressMenu}>
-      <SimpleLineIcons name={'options-vertical'} size={18} color="#f5f5f5" />
-    </TasksItemOption>
-  </TasksItemContainer>
+  <TasksItemMoveArea>
+    <TasksItemContainer active={active} finished={data.finished}>
+      <TasksItemOption activeOpacity={0.5} onPress={onPressChecker}>
+        <MaterialIcons
+          name={data.finished ? 'check-circle' : 'radio-button-unchecked'}
+          size={36}
+          color="#f5f5f5"
+        />
+      </TasksItemOption>
+      <TasksItemContent>
+        <TasksItemTitle finished={data.finished}>{data.title}</TasksItemTitle>
+        <TasksItemDescription finished={data.finished}>
+          {data.description}
+        </TasksItemDescription>
+      </TasksItemContent>
+      <TasksItemOption activeOpacity={0.58} onPress={onPressMenu}>
+        <SimpleLineIcons name={'options-vertical'} size={18} color="#f5f5f5" />
+      </TasksItemOption>
+    </TasksItemContainer>
+  </TasksItemMoveArea>
 );
 
 TasksItem.propTypes = {
   active: PropTypes.bool.isRequired,
   data: PropTypes.shape({
+    idTask: PropTypes.string,
     title: PropTypes.string,
     description: PropTypes.string,
+    finished: PropTypes.bool
   }),
   onPressChecker: PropTypes.func.isRequired,
   onPressNavigator: PropTypes.func.isRequired,
@@ -52,7 +56,6 @@ TasksItem.propTypes = {
 TasksItem.defaultProps = {
   active: false,
   onPressChecker: () => {},
-  onPressNavigator: () => {},
   onPressMenu: () => {},
 };
 
