@@ -56,7 +56,10 @@ const TaskShow = ({data, onRequestClose, onRequestDelete, onPressChecker}) => {
   }
 
   return (
-    <TaskShowContainer animationType="none" transparent={true}>
+    <TaskShowContainer
+      animationType="none"
+      transparent={true}
+      onRequestClose={preOnRequestClose}>
       <TaskShowContent>
         <TaskShowDismissAnimation
           style={{

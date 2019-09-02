@@ -48,7 +48,7 @@ const TaskCreate = ({onRequestClose, onRequestCreate}) => {
     }).start();
   }, []);
 
-  function _preOnRequestClose() {
+  function preOnRequestClose() {
     Animated.timing(animation, {
       toValue: 0,
       duration: 300,
@@ -60,7 +60,7 @@ const TaskCreate = ({onRequestClose, onRequestCreate}) => {
     });
   }
 
-  function _onRequestCreate() {
+  function preOnRequestCreate() {
     if (!inLoad && title && description) {
       onRequestCreate(title, description);
       setInLoad(1);
@@ -77,7 +77,10 @@ const TaskCreate = ({onRequestClose, onRequestCreate}) => {
   }
 
   return (
-    <TaskCreateContainer animationType="none" transparent={true}>
+    <TaskCreateContainer
+      animationType="none"
+      onRequestClose={preOnRequestClose}
+      transparent={true}>
       <TaskCreateContent>
         <TaskCreateDismissAnimation
           style={{
@@ -111,7 +114,7 @@ const TaskCreate = ({onRequestClose, onRequestCreate}) => {
               }}>
               <TaskCreateDismissButton
                 activityOpacity={0.1}
-                onPress={_preOnRequestClose}>
+                onPress={preOnRequestClose}>
                 <AntDesign name={'close'} size={36} color="#fff" />
               </TaskCreateDismissButton>
             </TaskCreateDismissButtonAnimation>
@@ -177,7 +180,7 @@ const TaskCreate = ({onRequestClose, onRequestCreate}) => {
                       placeholderTextColor="#999"
                       placeholder="Descrição"
                       returnKeyType={'done'}
-                      onSubmitEditing={_onRequestCreate}
+                      onSubmitEditing={preOnRequestCreate}
                     />
                   </TaskCreateFormInputContainer>
                   <TaskCreateFormSubmit
@@ -185,7 +188,7 @@ const TaskCreate = ({onRequestClose, onRequestCreate}) => {
                     inLoad={inLoad}
                     inSuccess={inSuccess}
                     underlayColor="#2aadd7"
-                    onPress={_onRequestCreate}>
+                    onPress={preOnRequestCreate}>
                     {inLoad ? (
                       <ActivityIndicator size={'small'} color="#fff" />
                     ) : inSuccess ? (
