@@ -1,6 +1,6 @@
 # Checker
 
-Simple CheckList App based in Google Drive with RocketSeat template #CodeChallenge #EndWeek
+Simple CheckList App with @Rocketseat template #CodeChallenge #EndWeek
 
 <img src="README.register.gif" width="360">
 <img src="README.add.gif" width="360">
