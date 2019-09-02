@@ -9,22 +9,24 @@ export const TaskShowContent = styled.View`
   padding: 20px;
   align-items: center;
   justify-content: center;
+  z-index: 100;
 `;
 
 export const TaskShowDismissAnimation = styled(Animated.View)`
   transform: translateY(600px);
+  z-index: 110;
 `;
 
 export const TaskShowDismiss = styled.View`
   flex-direction: row;
   align-items: center;
   justify-content: flex-end;
-  padding-bottom: 30px;
   width: 100%;
 `;
 
 export const TaskShowDismissButton = styled.TouchableOpacity`
   padding: 20px;
+  z-index: 120;
 `;
 
 export const TaskShowDismissButtonAnimation = styled(Animated.View)``;

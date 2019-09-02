@@ -1,8 +1,9 @@
-import { combineReducers } from 'redux';
+import {combineReducers} from 'redux';
+
+import tasks from './tasks';
 
 const reducers = combineReducers({
-  // Remova essa linha depois de adicionar seus ducks
-  example: () => [],
+  tasks,
 });
 
 export default reducers;

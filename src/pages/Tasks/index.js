@@ -1,8 +1,12 @@
-import React, {useState} from 'react';
-import {Platform, Alert} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {Platform } from 'react-native';
 import SortableList from 'react-native-sortable-list';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
+import {Creators as TasksActions} from '~/store/ducks/tasks';
 
 import {
   TasksKeyboardAvoid,
@@ -21,53 +25,60 @@ import TasksPlus from './TasksPlus';
 import TaskShow from './TaskShow';
 import TaskCreate from './TaskCreate';
 
-const Tasks = ({navigation}) => {
+const Tasks = ({data, tasksActions}) => {
   const [taskShowing, setTaskShowing] = useState(null);
   const [taskCreate, setTaskCreate] = useState(false);
+  const [finishedTasksCount, setFinishedTasksCount] = useState(0);
+  const [unfinishedTasksCount, setUnfinishedTasksCount] = useState(0);
 
-  const data = {
-    0: {
-      idTaskidtask: 1,
-      title: 'Task 1',
-      description: 'Desc 1',
-      finished: 0,
-    },
-    1: {
-      idTask: 1,
-      title: 'Task 2',
-      description: 'Desc 2',
-      finished: 1,
-    },
-    2: {
-      idTask: 1,
-      title: 'Task 3',
-      description: 'Desc 3',
-      finished: 0,
-    },
+  useEffect(() => {
+    setFinishedTasksCount(
+      data.reduce((acc, item) => {
+        if (!item.finished) {
+          acc++;
+        }
+        return acc;
+      }, 0),
+    );
+    setUnfinishedTasksCount(
+      data.reduce((acc, item) => {
+        if (item.finished) {
+          acc++;
+        }
+        return acc;
+      }, 0),
+    );
+  }, [data]);
 
-    3: {
-      idTask: 1,
-      title: 'Task 3',
-      description: 'Desc 3',
-      finished: 0,
-    },
+  const onRequestCreate = (title, description) => {
+    const {createTask} = tasksActions;
+    const idTask = Math.floor(Math.random() * 1000) + 1;
 
-    4: {
-      idTask: 1,
-      title: 'Task 4',
-      description: 'Desc 4',
-      finished: 0,
-    },
-    5: {
-      idTask: 1,
-      title: 'Task 5',
-      description: 'Desc 5',
-      finished: 0,
-    },
+    createTask({
+      idTask,
+      title,
+      description,
+    });
   };
 
-  const finishedTasksCount = 6;
-  const unfinishedTasksCount = 6;
+  const onPressChecker = task => {
+    const {toggleTask} = tasksActions;
+    toggleTask(task);
+  };
+
+  const onRequestDelete = task => {
+    const {deleteTask} = tasksActions;
+    deleteTask(task);
+  };
+
+  const onChangeOrder = (key, nextOrder) => {
+    const {orderTasks} = tasksActions;
+    let dataPreserveOrder = [];
+    for (index of nextOrder) {
+      dataPreserveOrder.push(data[index]);
+    }
+    orderTasks(dataPreserveOrder);
+  };
 
   return (
     <TasksKeyboardAvoid
@@ -80,10 +91,10 @@ const Tasks = ({navigation}) => {
           <TaskShow
             onRequestClose={() => setTaskShowing(null)}
             onRequestDelete={() => {
-              Alert.alert('delete');
+              onRequestDelete(taskShowing);
             }}
-            onRequestToggle={() => {
-              Alert.alert('toggle');
+            onPressChecker={() => {
+              onPressChecker(taskShowing);
             }}
             data={taskShowing}
           />
@@ -99,39 +110,44 @@ const Tasks = ({navigation}) => {
         {taskCreate && (
           <TaskCreate
             onRequestClose={() => setTaskCreate(false)}
-            onRequestCreate={(title, description) => {
-              Alert.alert(title);
-              Alert.alert(description);
-            }}
+            onRequestCreate={onRequestCreate}
           />
         )}
 
         <SortableList
           data={data}
+          onReleaseRow={onChangeOrder}
           style={{flex: 1}}
           showsVerticalScrollIndicator={false}
-          renderHeader={() => (
-            <TasksTitleContent>
-              <FontAwesome5 name="clipboard-check" size={40} color="#ecbe69" />
-              <TasksTitleInformationContent>
-                <TasksTitleCount>
-                  {finishedTasksCount ? finishedTasksCount : 'Nenhuma '}
-                  {finishedTasksCount > 1
-                    ? 'Tarefas Pendentes'
-                    : 'Tarefa Pendente'}
-                </TasksTitleCount>
-                <TasksDesc>
-                  {unfinishedTasksCount ? unfinishedTasksCount : 'Nenhuma '}
-                  {unfinishedTasksCount > 1
-                    ? 'Tarefas Concluídas'
-                    : 'Tarefa Concluída'}
-                </TasksDesc>
-              </TasksTitleInformationContent>
-            </TasksTitleContent>
-          )}
+          renderHeader={() => {
+            if (!data.length) return null;
+            return (
+              <TasksTitleContent>
+                <FontAwesome5
+                  name="clipboard-check"
+                  size={40}
+                  color="#ecbe69"
+                />
+                <TasksTitleInformationContent>
+                  <TasksTitleCount>
+                    {finishedTasksCount ? finishedTasksCount : 'Nenhuma'}
+                    {finishedTasksCount > 1 ? ' Tarefas' : ' Tarefa'}
+                  </TasksTitleCount>
+                  <TasksDesc>
+                    {unfinishedTasksCount ? unfinishedTasksCount : 'Nenhuma'}
+                    {unfinishedTasksCount > 1
+                      ? ' Tarefas Concluídas'
+                      : ' Tarefa Concluída'}
+                  </TasksDesc>
+                </TasksTitleInformationContent>
+              </TasksTitleContent>
+            );
+          }}
           renderRow={({data, active}) => (
             <TasksItem
-              onPressChecker={() => {}}
+              onPressChecker={() => {
+                onPressChecker(data);
+              }}
               onPressMenu={() => {
                 setTaskShowing(data);
               }}
@@ -140,9 +156,11 @@ const Tasks = ({navigation}) => {
             />
           )}
           renderFooter={() => {
+            if (data.length) return null;
+
             return (
               <TasksEmptyContainer>
-                <Ionicons name="md-construct" size={60} color="#792e4b" />
+                <Ionicons name="md-construct" size={60} color="#ecbe69" />
                 <TasksEmptyTitle>Nenhuma tarefa!</TasksEmptyTitle>
                 <TasksEmptyDesc>
                   Começe agora mesmo a criar sua lista de tarefas e controle de
@@ -161,4 +179,11 @@ Tasks.navigationOptions = {
   header: null,
 };
 
-export default Tasks;
+export default connect(
+  state => ({
+    data: state.tasks.data,
+  }),
+  dispatch => ({
+    tasksActions: bindActionCreators(TasksActions, dispatch),
+  }),
+)(Tasks);

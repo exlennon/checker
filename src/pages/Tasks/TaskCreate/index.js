@@ -1,7 +1,8 @@
 import React, {useState, useEffect, useRef} from 'react';
 import PropTypes from 'prop-types';
-import {Animated, Easing} from 'react-native';
+import {Animated, Easing, ActivityIndicator} from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
 import {
   TaskCreateContainer,
@@ -31,6 +32,8 @@ const TaskCreate = ({onRequestClose, onRequestCreate}) => {
   const [animation, setAnimation] = useState(new Animated.Value(0));
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [inLoad, setInLoad] = useState(0);
+  const [inSuccess, setInSuccess] = useState(0);
 
   const titleRef = useRef(null);
   const descriptionRef = useRef(null);
@@ -58,8 +61,18 @@ const TaskCreate = ({onRequestClose, onRequestCreate}) => {
   }
 
   function _onRequestCreate() {
-    if (title && description) {
+    if (!inLoad && title && description) {
       onRequestCreate(title, description);
+      setInLoad(1);
+      setTitle('');
+      setDescription('');
+      setTimeout(() => {
+        setInLoad(0);
+        setInSuccess(1);
+        setTimeout(() => {
+          setInSuccess(0);
+        }, 1500);
+      }, 1000);
     }
   }
 
@@ -137,6 +150,7 @@ const TaskCreate = ({onRequestClose, onRequestCreate}) => {
                   </TaskCreateFormDesc>
                   <TaskCreateFormInputContainer>
                     <TaskCreateFormInput
+                      disabled={inLoad}
                       ref={titleRef}
                       autoCapitalize={'none'}
                       value={title}
@@ -151,6 +165,7 @@ const TaskCreate = ({onRequestClose, onRequestCreate}) => {
                   </TaskCreateFormInputContainer>
                   <TaskCreateFormInputContainer>
                     <TaskCreateFormInput
+                      disabled={inLoad}
                       ref={descriptionRef}
                       autoCapitalize={'none'}
                       value={description}
@@ -166,11 +181,20 @@ const TaskCreate = ({onRequestClose, onRequestCreate}) => {
                     />
                   </TaskCreateFormInputContainer>
                   <TaskCreateFormSubmit
+                    disabled={inLoad}
+                    inLoad={inLoad}
+                    inSuccess={inSuccess}
                     underlayColor="#2aadd7"
                     onPress={_onRequestCreate}>
-                    <TaskCreateFormSubmitText>
-                      ADICIONAR
-                    </TaskCreateFormSubmitText>
+                    {inLoad ? (
+                      <ActivityIndicator size={'small'} color="#fff" />
+                    ) : inSuccess ? (
+                      <FontAwesome5 name={'check'} size={22} color="#fff" />
+                    ) : (
+                      <TaskCreateFormSubmitText>
+                        ADICIONAR
+                      </TaskCreateFormSubmitText>
+                    )}
                   </TaskCreateFormSubmit>
                 </TaskCreateFormContent>
               </TaskCreateForm>

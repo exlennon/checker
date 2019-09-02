@@ -25,7 +25,7 @@ import {
 import modalBottom from '~/assets/modal-bottom.png';
 import modalTop from '~/assets/modal-top.png';
 
-const TaskShow = ({data, onRequestClose, onRequestDelete, onRequestToggle}) => {
+const TaskShow = ({data, onRequestClose, onRequestDelete, onPressChecker}) => {
   const [animation, setAnimation] = useState(new Animated.Value(0));
 
   useEffect(() => {
@@ -48,6 +48,11 @@ const TaskShow = ({data, onRequestClose, onRequestDelete, onRequestToggle}) => {
     }).start(() => {
       onRequestClose();
     });
+  }
+
+  function preOnRequestDelete() {
+    onRequestDelete();
+    preOnRequestClose();
   }
 
   return (
@@ -144,12 +149,12 @@ const TaskShow = ({data, onRequestClose, onRequestDelete, onRequestToggle}) => {
             <TaskShowCheckerButton
               underlayColor="#2aadd7"
               finished={data.finished}
-              onPress={onRequestToggle}>
+              onPress={onPressChecker}>
               <FontAwesome5 name={'check'} size={22} color="#fff" />
             </TaskShowCheckerButton>
             <TaskShowCheckerButton
               underlayColor="#2aadd7"
-              onPress={onRequestDelete}>
+              onPress={preOnRequestDelete}>
               <FontAwesome5 name={'trash'} size={22} color="#fff" />
             </TaskShowCheckerButton>
           </TaskShowChecker>
@@ -168,14 +173,14 @@ TaskShow.propTypes = {
   }),
   onRequestClose: PropTypes.func.isRequired,
   onRequestDelete: PropTypes.func.isRequired,
-  onRequestToggle: PropTypes.func.isRequired,
+  onPressChecker: PropTypes.func.isRequired,
 };
 
 TaskShow.defaultProps = {
   data: null,
   onRequestClose: () => {},
   onRequestDelete: () => {},
-  onRequestToggle: () => {},
+  onPressChecker: () => {},
 };
 
 export default TaskShow;

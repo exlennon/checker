@@ -1,17 +1,20 @@
 import React from 'react';
 
 import '~/config/ReactotronConfig';
+
 import {StatusBar} from 'react-native';
-
+import {PersistGate} from 'redux-persist/integration/react';
 import {Provider} from 'react-redux';
-import store from './store';
 
+import { store, persistor}  from './store';
 import Routes from '~/routes';
 
 const App = () => (
   <Provider store={store}>
-    <StatusBar backgroundColor="#2c1656" barStyle="light-content" />
-    <Routes />
+    <PersistGate loading={null} persistor={persistor}>
+      <StatusBar backgroundColor="#2c1656" barStyle="light-content" />
+      <Routes />
+    </PersistGate>
   </Provider>
 );
 

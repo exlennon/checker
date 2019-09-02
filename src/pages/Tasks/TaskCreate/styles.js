@@ -9,11 +9,13 @@ export const TaskCreateContent = styled.View`
   padding: 20px;
   align-items: center;
   justify-content: center;
+  z-index: 100;
 `;
 
 export const TaskCreateContentAreaAnimation = styled(Animated.View)`
   transform: translateY(300px);
   width: 100%;
+  z-index: 110;
 `;
 
 export const TaskCreateContentArea = styled.View`
@@ -26,6 +28,7 @@ export const TaskCreateContentArea = styled.View`
 export const TaskCreateBackgroundBottom = styled.ImageBackground`
   flex-direction: column;
   padding-bottom: 60px;
+  z-index: 120;
 `;
 
 export const TaskCreateBackgroundTop = styled.ImageBackground`
@@ -101,7 +104,8 @@ export const TaskCreateFormInput = styled.TextInput`
 export const TaskCreateFormSubmit = styled.TouchableHighlight`
   align-items: center;
   flex-direction: row;
-  background: #2c1656;
+  background: ${props =>
+    props.inSuccess ? '#70c45f' : props.inLoad ? '#2aadd7' : '#2c1656'};
   padding: 20px;
   justify-content: center;
   border-radius: 8px;
